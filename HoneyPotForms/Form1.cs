@@ -139,9 +139,10 @@ namespace HoneyPotForms
 
         private void Draw_Button_Click(object sender, EventArgs e)
         {
-            var width = 250;
-            var height = 60;
-            var hexPerRow = 14;
+            // ratio:perRow 9:4:8 9:7:4 30:7:16 26:6:14 7:2:12
+            var width = 90 * 10;
+            var height = 40 * 10;
+            var hexPerRow = 8;
             var honeyPot = BuildHoneyPot(width, height, hexPerRow);
 
             var originalBitmap = new Bitmap(width * 2, height * 2);
