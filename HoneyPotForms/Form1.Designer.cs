@@ -30,7 +30,11 @@
         {
             Draw_Button = new Button();
             pictureBox1 = new PictureBox();
+            UploadButton = new Button();
+            Hex_Per_Row = new NumericUpDown();
+            label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)Hex_Per_Row).BeginInit();
             SuspendLayout();
             // 
             // Draw_Button
@@ -51,23 +55,59 @@
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 1;
             pictureBox1.TabStop = false;
+            pictureBox1.Click += pictureBox1_Click;
+            // 
+            // UploadButton
+            // 
+            UploadButton.Location = new Point(713, 12);
+            UploadButton.Name = "UploadButton";
+            UploadButton.Size = new Size(75, 23);
+            UploadButton.TabIndex = 2;
+            UploadButton.Text = "Upload";
+            UploadButton.UseVisualStyleBackColor = true;
+            UploadButton.Click += UploadButton_Click;
+            // 
+            // Hex_Per_Row
+            // 
+            Hex_Per_Row.Location = new Point(385, 12);
+            Hex_Per_Row.Name = "Hex_Per_Row";
+            Hex_Per_Row.Size = new Size(120, 23);
+            Hex_Per_Row.TabIndex = 3;
+            Hex_Per_Row.Value = new decimal(new int[] { 10, 0, 0, 0 });
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(305, 16);
+            label1.Name = "label1";
+            label1.Size = new Size(74, 15);
+            label1.TabIndex = 4;
+            label1.Text = "Hex Per Row";
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(label1);
+            Controls.Add(Hex_Per_Row);
+            Controls.Add(UploadButton);
             Controls.Add(pictureBox1);
             Controls.Add(Draw_Button);
             Name = "Form1";
             Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)Hex_Per_Row).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
         private Button Draw_Button;
         private PictureBox pictureBox1;
+        private Button UploadButton;
+        private NumericUpDown Hex_Per_Row;
+        private Label label1;
     }
 }

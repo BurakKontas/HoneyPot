@@ -1,13 +1,13 @@
 ﻿using HoneyPotForms.Entities;
-using HoneyPotForms.Interfaces;
+using HoneyPotForms.Shapes;
 
 namespace HoneyPotForms.Builders;
 
 public class HoneyPotBuilder
 {
-    private readonly List<ICentroidCalculable> _pots = new();
+    private readonly List<Hexagon> _pots = new();
     public static HoneyPotBuilder Create() => new();
-    public HoneyPotBuilder AddPot(ICentroidCalculable pot)
+    public HoneyPotBuilder AddPot(Hexagon pot)
     {
         _pots.Add(pot);
         return this;

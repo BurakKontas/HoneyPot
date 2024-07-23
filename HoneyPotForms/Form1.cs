@@ -1,3 +1,5 @@
+using System.Drawing.Drawing2D;
+using System.Runtime.InteropServices;
 using HoneyPotForms.Builders;
 using HoneyPotForms.Entities;
 using HoneyPotForms.Shapes;
@@ -6,6 +8,8 @@ namespace HoneyPotForms
 {
     public partial class Form1 : Form
     {
+        private HoneyPot _honeyPot;
+
         public Form1()
         {
             InitializeComponent();
@@ -13,124 +17,33 @@ namespace HoneyPotForms
 
         private HoneyPot BuildHoneyPot(int width, int height, int hexPerRow)
         {
-            var hexWidth = width / (2 * hexPerRow + 1);
+            HoneyPotBuilder builder = HoneyPotBuilder.Create();
+            int hexWidth = width / (2 * hexPerRow + 1);
+            int index = 1;
 
-            var builder = HoneyPotBuilder.Create();
-            for (var j = 0; j <= height / hexWidth; j++)
+            for (int i = 0; i <= width / hexWidth + 2; i += 2)
             {
-                for (var i = 0; i <= width / hexWidth; i++)
+                for (int j = 0; j <= height / hexWidth + 2; j += 2)
                 {
-                    if (j == 0)
+                    Hexagon hexagon;
+                    if (j % 4 == 0)
                     {
-                        if (i == 0)
-                        {
-                            var triangle = new Triangle(
-                                new Coordinate(0, 0),
-                                new Coordinate(0, hexWidth),
-                                new Coordinate(hexWidth, 0)
-                            );
+                        hexagon = new Hexagon(
+                            new Coordinate(i * hexWidth, (j - 1) * hexWidth),
+                            hexWidth,
+                            index++
+                        );
 
-                            builder.AddPot(triangle);
-                        }
-                        else if (i % 2 == 0)
-                        {
-                            var triangle = new Triangle(
-                                new Coordinate((i - 1) * hexWidth, j * hexWidth),
-                                new Coordinate(i * hexWidth, (j + 1) * hexWidth),
-                                new Coordinate((i + 1) * hexWidth, j * hexWidth)
-                            );
-
-                            builder.AddPot(triangle);
-                        }
-                    }
-                    if (i == width / hexWidth)
-                    {
-                        if (j % 2 == 1)
-                        {
-                            if (j % 3 == 0 || j == height / hexWidth) continue;
-                            var trapezoid = new Trapezoid(
-                                new Coordinate(i * hexWidth, (j - 1) * hexWidth),
-                                new Coordinate((i - 1) * hexWidth, j * hexWidth),
-                                new Coordinate((i - 1) * hexWidth, (j + 1) * hexWidth),
-                                new Coordinate(i * hexWidth, (j + 2) * hexWidth)
-                            );
-
-                            builder.AddPot(trapezoid);
-                        }
                     }
                     else
                     {
-                        if (j % 3 == 0 && j < height / hexWidth)
-                        {
-                            if (j % 2 == 1 && i % 2 == 0)
-                            {
-                                if (i == 0)
-                                {
-                                    var trapezoid = new Trapezoid(
-                                        new Coordinate(i * hexWidth, (j - 1) * hexWidth),
-                                        new Coordinate(i * hexWidth, (j + 2) * hexWidth),
-                                        new Coordinate((i + 1) * hexWidth, (j + 1) * hexWidth),
-                                        new Coordinate((i + 1) * hexWidth, j * hexWidth)
-                                    );
-
-                                    builder.AddPot(trapezoid);
-                                }
-                                else
-                                {
-                                    var hexagon = new Hexagon(
-                                        new Coordinate(i * hexWidth, (j - 1) * hexWidth),
-                                        new Coordinate((i - 1) * hexWidth, j * hexWidth),
-                                        new Coordinate((i - 1) * hexWidth, (j + 1) * hexWidth),
-                                        new Coordinate(i * hexWidth, (j + 2) * hexWidth),
-                                        new Coordinate((i + 1) * hexWidth, (j + 1) * hexWidth),
-                                        new Coordinate((i + 1) * hexWidth, j * hexWidth)
-                                    );
-
-                                    builder.AddPot(hexagon);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (j % 2 == 1 && i % 2 == 1 && j != height / hexWidth)
-                            {
-                                var hexagon = new Hexagon(
-                                    new Coordinate(i * hexWidth, (j - 1) * hexWidth),
-                                    new Coordinate((i - 1) * hexWidth, j * hexWidth),
-                                    new Coordinate((i - 1) * hexWidth, (j + 1) * hexWidth),
-                                    new Coordinate(i * hexWidth, (j + 2) * hexWidth),
-                                    new Coordinate((i + 1) * hexWidth, (j + 1) * hexWidth),
-                                    new Coordinate((i + 1) * hexWidth, j * hexWidth)
-                                );
-
-                                builder.AddPot(hexagon);
-                            }
-                        }
-                    }
-
-                    if (j != height / hexWidth) continue;
-                    
-                    if (i == 0)
-                    {
-                        var triangle = new Triangle(
-                            new Coordinate(0, (j - 1) * hexWidth),
-                            new Coordinate(0, j * hexWidth),
-                            new Coordinate((i + 1) * hexWidth, j * hexWidth)
+                        hexagon = new Hexagon(
+                            new Coordinate((i - 1) * hexWidth, (j - 1) * hexWidth),
+                            hexWidth,
+                            index++
                         );
-
-                        builder.AddPot(triangle);
                     }
-                    else if (i % 2 == 0)
-                    {
-                        var triangle = new Triangle(
-                            new Coordinate((i - 1) * hexWidth, j * hexWidth),
-                            new Coordinate((i + 1) * hexWidth, j * hexWidth),
-                            new Coordinate(i * hexWidth, (j - 1) * hexWidth)
-                        );
-
-                        builder.AddPot(triangle);
-                    }
-                    
+                    builder.AddPot(hexagon);
                 }
             }
 
@@ -139,19 +52,111 @@ namespace HoneyPotForms
 
         private void Draw_Button_Click(object sender, EventArgs e)
         {
-            // ratio:perRow 9:4:8 9:7:4 30:7:16 26:6:14 7:2:12
-            var width = 90 * 10;
-            var height = 40 * 10;
-            var hexPerRow = 8;
-            var honeyPot = BuildHoneyPot(width, height, hexPerRow);
-
-            var originalBitmap = new Bitmap(width * 2, height * 2);
-            using (var g = Graphics.FromImage(originalBitmap))
+            if (pictureBox1.Image == null)
             {
-                honeyPot.Draw(g);
+                MessageBox.Show(@"Please upload an image first.");
+                return;
             }
 
-            pictureBox1.Image = originalBitmap;
+            Bitmap image = (Bitmap)pictureBox1.Image;
+
+            int width = image.Width;
+            int height = image.Height;
+            int hexPerRow = (int)Hex_Per_Row.Value;
+            _honeyPot = BuildHoneyPot(width, height, hexPerRow);
+
+            using (Graphics g = Graphics.FromImage(image))
+            {
+                _honeyPot.Draw(g);
+            }
+
+            pictureBox1.Image = image;
+        }
+
+        private void UploadButton_Click(object sender, EventArgs e)
+        {
+            UploadImage(pictureBox1);
+        }
+
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            MouseEventArgs mouseEventArgs = (MouseEventArgs)e;
+            int x = mouseEventArgs.X;
+            int y = mouseEventArgs.Y;
+
+            Hexagon closestPot = _honeyPot.FindHexagon(new Coordinate(x, y));
+
+            Bitmap hexagonImage = CropHexagonFromImage((Bitmap)pictureBox1.Image, closestPot);
+            HexagonForm hexagonForm = new HexagonForm(hexagonImage);
+            hexagonForm.Show();
+        }
+
+        private Bitmap CropHexagonFromImage(Bitmap originalImage, Hexagon hexagon)
+        {
+            float minX = Math.Min(hexagon.Vertex1.X, Math.Min(hexagon.Vertex2.X, Math.Min(hexagon.Vertex3.X,
+                Math.Min(hexagon.Vertex4.X, Math.Min(hexagon.Vertex5.X, hexagon.Vertex6.X)))));
+            float minY = Math.Min(hexagon.Vertex1.Y, Math.Min(hexagon.Vertex2.Y, Math.Min(hexagon.Vertex3.Y,
+                Math.Min(hexagon.Vertex4.Y, Math.Min(hexagon.Vertex5.Y, hexagon.Vertex6.Y)))));
+            float maxX = Math.Max(hexagon.Vertex1.X, Math.Max(hexagon.Vertex2.X, Math.Max(hexagon.Vertex3.X,
+                Math.Max(hexagon.Vertex4.X, Math.Max(hexagon.Vertex5.X, hexagon.Vertex6.X)))));
+            float maxY = Math.Max(hexagon.Vertex1.Y, Math.Max(hexagon.Vertex2.Y, Math.Max(hexagon.Vertex3.Y,
+                Math.Max(hexagon.Vertex4.Y, Math.Max(hexagon.Vertex5.Y, hexagon.Vertex6.Y)))));
+
+            int width = (int)(maxX - minX);
+            int height = (int)(maxY - minY);
+
+            Bitmap croppedImage = new Bitmap(width, height);
+            using Graphics g = Graphics.FromImage(croppedImage);
+            g.Clear(Color.Transparent);
+
+            PointF[] points = new PointF[]
+            {
+                new PointF(hexagon.Vertex1.X - minX, hexagon.Vertex1.Y - minY),
+                new PointF(hexagon.Vertex2.X - minX, hexagon.Vertex2.Y - minY),
+                new PointF(hexagon.Vertex3.X - minX, hexagon.Vertex3.Y - minY),
+                new PointF(hexagon.Vertex4.X - minX, hexagon.Vertex4.Y - minY),
+                new PointF(hexagon.Vertex5.X - minX, hexagon.Vertex5.Y - minY),
+                new PointF(hexagon.Vertex6.X - minX, hexagon.Vertex6.Y - minY),
+            };
+
+            GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+            path.AddPolygon(points);
+
+            g.SetClip(path);
+            g.DrawImage(originalImage, new Rectangle(0, 0, width, height), minX, minY, width, height, GraphicsUnit.Pixel);
+
+            return croppedImage;
+        }
+
+
+        private void UploadImage(PictureBox pictureBox, bool resizeBox = false)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image files (*.jpg, *.jpeg, *.png, *.gif, *.bmp)|*.jpg; *.jpeg; *.png; *.gif; *.bmp|All files (*.*)|*.*",
+                FilterIndex = 1,
+                RestoreDirectory = true
+            };
+
+            if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+
+            try
+            {
+                var selectedFile = openFileDialog.FileName;
+
+                pictureBox.Image = Image.FromFile(selectedFile);
+
+                if (resizeBox) pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+                else
+                {
+                    pictureBox.Size = pictureBox.Image.Size;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Resim yüklenirken bir hata oluþtu: " + ex.Message);
+            }
         }
     }
 }
