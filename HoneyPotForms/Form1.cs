@@ -8,7 +8,8 @@ namespace HoneyPotForms
 {
     public partial class Form1 : Form
     {
-        private HoneyPot _honeyPot;
+        private HoneyPot? _honeyPot = null;
+        private Image? _defaultImage = null;
 
         public Form1()
         {
@@ -21,9 +22,9 @@ namespace HoneyPotForms
             int hexWidth = width / (2 * hexPerRow + 1);
             int index = 1;
 
-            for (int i = 0; i <= width / hexWidth + 2; i += 2)
+            for (int j = 0; j <= height / hexWidth + 2; j += 2)
             {
-                for (int j = 0; j <= height / hexWidth + 2; j += 2)
+                for (int i = 0; i <= width / hexWidth + 2; i += 2)
                 {
                     Hexagon hexagon;
                     if (j % 4 == 0)
@@ -52,13 +53,13 @@ namespace HoneyPotForms
 
         private void Draw_Button_Click(object sender, EventArgs e)
         {
-            if (pictureBox1.Image == null)
+            if (_defaultImage == null)
             {
                 MessageBox.Show(@"Please upload an image first.");
                 return;
             }
 
-            Bitmap image = (Bitmap)pictureBox1.Image;
+            Image? image = (Image?)_defaultImage?.Clone();
 
             int width = image.Width;
             int height = image.Height;
@@ -76,11 +77,18 @@ namespace HoneyPotForms
         private void UploadButton_Click(object sender, EventArgs e)
         {
             UploadImage(pictureBox1);
+            _defaultImage = (Image?)pictureBox1.Image.Clone();
         }
 
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void PictureBox1_Click(object sender, EventArgs e)
         {
+            if (_honeyPot == null)
+            {
+                //MessageBox.Show(@"Please draw the honey pot first.");
+                return;
+            }
+
             MouseEventArgs mouseEventArgs = (MouseEventArgs)e;
             int x = mouseEventArgs.X;
             int y = mouseEventArgs.Y;
@@ -112,15 +120,15 @@ namespace HoneyPotForms
 
             PointF[] points = new PointF[]
             {
-                new PointF(hexagon.Vertex1.X - minX, hexagon.Vertex1.Y - minY),
-                new PointF(hexagon.Vertex2.X - minX, hexagon.Vertex2.Y - minY),
-                new PointF(hexagon.Vertex3.X - minX, hexagon.Vertex3.Y - minY),
-                new PointF(hexagon.Vertex4.X - minX, hexagon.Vertex4.Y - minY),
-                new PointF(hexagon.Vertex5.X - minX, hexagon.Vertex5.Y - minY),
-                new PointF(hexagon.Vertex6.X - minX, hexagon.Vertex6.Y - minY),
+                new(hexagon.Vertex1.X - minX, hexagon.Vertex1.Y - minY),
+                new(hexagon.Vertex2.X - minX, hexagon.Vertex2.Y - minY),
+                new(hexagon.Vertex3.X - minX, hexagon.Vertex3.Y - minY),
+                new(hexagon.Vertex4.X - minX, hexagon.Vertex4.Y - minY),
+                new(hexagon.Vertex5.X - minX, hexagon.Vertex5.Y - minY),
+                new(hexagon.Vertex6.X - minX, hexagon.Vertex6.Y - minY),
             };
 
-            GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+            GraphicsPath path = new GraphicsPath();
             path.AddPolygon(points);
 
             g.SetClip(path);

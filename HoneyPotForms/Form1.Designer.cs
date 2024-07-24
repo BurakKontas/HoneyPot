@@ -49,16 +49,19 @@
             // 
             // pictureBox1
             // 
+            pictureBox1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            pictureBox1.BackColor = SystemColors.ActiveBorder;
             pictureBox1.Location = new Point(12, 41);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(776, 397);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
             pictureBox1.TabIndex = 1;
             pictureBox1.TabStop = false;
-            pictureBox1.Click += pictureBox1_Click;
+            pictureBox1.Click += PictureBox1_Click;
             // 
             // UploadButton
             // 
+            UploadButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             UploadButton.Location = new Point(713, 12);
             UploadButton.Name = "UploadButton";
             UploadButton.Size = new Size(75, 23);
@@ -69,6 +72,8 @@
             // 
             // Hex_Per_Row
             // 
+            Hex_Per_Row.Anchor = AnchorStyles.Top;
+            Hex_Per_Row.AutoSize = true;
             Hex_Per_Row.Location = new Point(385, 12);
             Hex_Per_Row.Name = "Hex_Per_Row";
             Hex_Per_Row.Size = new Size(120, 23);
@@ -77,6 +82,7 @@
             // 
             // label1
             // 
+            label1.Anchor = AnchorStyles.Top;
             label1.AutoSize = true;
             label1.Location = new Point(305, 16);
             label1.Name = "label1";
@@ -88,6 +94,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            AutoScroll = true;
             ClientSize = new Size(800, 450);
             Controls.Add(label1);
             Controls.Add(Hex_Per_Row);
